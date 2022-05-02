@@ -1,0 +1,1 @@
+# cypress-track-events
