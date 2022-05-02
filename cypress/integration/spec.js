@@ -21,6 +21,23 @@ it('sends a form', () => {
     cy.get('input[type=submit]').click()
   })
 
+  // confirm the network request was sent correctly
+  // hmm, how do we verify the request as sent by the application?
+  cy.wait('@post').its('request.body', { timeout: 0 })
+})
+
+it('sends the expected form', () => {
+  cy.visit('public/index.html')
+
+  cy.intercept('POST', '/api/v1/message', {}).as('post')
+  cy.get('form').within(() => {
+    cy.get('input[name=name]').type('John Doe')
+    cy.get('input[name=email]').type('joe@doe.com')
+    cy.get('input[name=phone]').type('+1 (555) 555-5555')
+    cy.get('input[name=message]').type('Hello World')
+    cy.get('input[type=submit]').click()
+  })
+
   // hmm, how do we verify the request as sent by the application?
   cy.get('@track')
     .should('be.calledWith', 'form')
